@@ -1,0 +1,10 @@
+*.cls
+*.pdf
+*.bbl
+*.blg
+*.aux
+*.pdf
+*.log
+*.gz
+*.dvi
+images/
