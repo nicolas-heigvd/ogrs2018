@@ -3,7 +3,7 @@
 *.bbl
 *.blg
 *.aux
-*.pdf
+*ogrs2018*.pdf
 *.log
 *.gz
 *.dvi
