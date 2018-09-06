@@ -1,5 +1,5 @@
 # ogrs2018
-1. Create a `command.sh` file with this content and execute it:    
+1. To clone this repo, create anywhere on a linux OS a `command.sh` file with this content and execute it: 
 
 `#!/bin/bash`  
 `mkdir qgis-python-plugin`  
