@@ -44,14 +44,16 @@
 Smapshot is a web-based participatory virtual globe \citep{produit2018} where  
 users can georeference historical images of the landscape by clicking a minimum
 of six well identifiable correspondence points between the image and a 3D virtual 
-globe. The image is then superimposed with the 3D model giving the impression that
-the observer is looking through a window of the past. 
+globe.
+% The image is then superimposed with the 3D model giving the impression that
+% the observer is looking through a window of the past. 
 The images database is expected to grow exponentially. In a near future, 
 the work of the web users will no longer be enough.
 
 To tackle this issue, we developed a semi-automatic process to georeference images.
-The users will be shown only images having a maximum number of neighbor images 
-in a graph. These neighbor images are the ones with which they share some overlay. 
+The volunteers will be shown only images having a maximum number of neighbour images 
+in the matching graph. These neighbour images are the ones with which they share 
+some overlay. 
 This overlap is detected using the SIFT algorithm \citep{lowe1999} in a pairewise 
 matching process.
 
@@ -62,7 +64,8 @@ from a digital elevation model.
 Then, by running a perspective-n-point algorithm after having geometrically tested the
 resulting homography between the two images, we compute the 6 degree of freedom pose,
 i.e. the position (X,Y,Z) and orientation (azimuth, tilt and roll angles) of the 
-query image. 
+query image. The query image then becomes a reference and the georeference 
+computation can be propagated more deeply in the graph structure.
 \end{abstract}
 
 
@@ -78,13 +81,24 @@ query image.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Online image databases are drastically growing (several hundreds of million 
-new photos every day) with the advent of sensors becoming more and more accessible. 
-The smapshot database is also brought to grow, in a more modest way but sufficiently 
-so that the georeferencing of the images currently carried out by volunteer 
-Internet users will no longer be enough anymore.
+Smapshot is a web-based participatory virtual globe. It uses crowdsourcing for 
+the georeferencing of historical images. These images come from various sources, 
+such as public archives or private libraries. Volunteers georeference images 
+they know a prior coarse location by picking a minimum of six identifiable 
+correspondence points both in the image and the textured 3D model of the landscape. 
+A pose estimation algorithm computes the position and orientation of the camera 
+and the image is then superimposed  with the 3D model giving the impression that 
+the observer is looking through a window of the past.
 
-In order to considerably simplify their task, this work shows that it is possible 
+As every other online image databases, the smapshot one is expected to 
+exponentially grow in a near future. The georeferencing of the images currently 
+carried out by volunteer Internet users will no longer be enough.
+In order to considerably simplify their task, this work introduces a method to
+geolocate images in a semi-automatic way.
+
+%%%%%%%%%%%%%%%%
+\iffalse
+This study shows that it is possible 
 to classify images by different methods. Content based image retrieval % (CBIR) 
 makes use of merging local and global features of an image as a multidimensional 
 vector \citep{smeulders2000}. 
@@ -97,37 +111,70 @@ Bag-of-Features is another technique that reduces the space of the many
 features of an image to a simple histogram \citep{feifei2005}. 
 It is then easier to find or compare images solely based on it. 
 Supervised learning techniques can then be used to classify images.
-However, they require a training phase that is time consumming and need 
+However, they require a training phase that is time consuming and need 
 significant computational resources.
 
-In recent years, deep learning methods such as convolutional neural networks 
-have shown that they are also very well suited to classifying or searching images 
-in very large databases \citep{weyand2016}.
-
 But there is one more step to achieve to geolocate images. 
-Some studies have shown that it is possible to geolocate large quantities of 
-images only based on their comparison with a database of millions of geotagged 
-images \citep{hays2015,weyand2016}.
-%Some results are sometimes surprising.
+\fi
+%%%%%%%%%%%%%%%%
 
-This work brings a novel contribution in geolocating images for the smapshot
-database. It also proposes a way to insert this approach in a user friendly way on
-the existing plateform.
+
+Some studies have shown it is possible to geolocate large quantities of 
+images only based on their comparison with a database of millions of geotagged 
+images \citep{hays2015,weyand2016}. Object retrieval technique can also be used 
+for spatial matching between images \citep{philbin2007}. 
+\cite{baatz2012} have used a sky segmentation method in mountaineous terrain 
+to extract contour informations and matched them with DEM data using a 
+bag-of-word approach \citep{feifei2005}. \cite{produit2014} also makes use
+of a Kalman filter robust skyline matching approach with an initial user input 
+to compute the pose of an image.
+
+
+In recent years, deep learning methods such as convolutional neural networks 
+\citep{lecun2015deep} have shown that they are also very well suited to classifying 
+or searching images in very large databases, even for geolocation purposes \citep{weyand2016}.
+
+This work brings an optimization method in volunteers based image georeferencing.
+They will only be shown central images in a pairewise matching graph. 
+The geolocation they provide to these central images will then be automatically 
+propagated to other images in the graph in a 4 stages iteration process involving:
+1) a pairewise image matching to find images with overlay, 
+2) the extraction of highest valency images (i.e. central images) on the 
+pairewise resulting graph, 
+3) the georeferencing of central images by volunteers, 
+4) the automatic georeferencing of images sharing overlay with the user 
+georeferenced central ones.
+%%%%%%%%%%%%%%%%
+\iffalse
+\begin{enumerate}\itemsep0.2em
+\item a pairewise image matching to find images with overlay
+\item the extraction of highest valency images (i.e. central images) on the 
+pairewise resulting graph
+\item the georeferencing of central images by volunteers
+\item the automatic georeferencing of images sharing overlay with the user 
+georeferenced central ones
+\end{enumerate}
+\fi
+%%%%%%%%%%%%%%%%
+%It also proposes a way to insert this approach in a user friendly way on the 
+%existing plateform.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Method}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%To evaluate the method, we first build a sample dataset.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Building a sample dataset}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 All images come from the smapshot database and are already geolocated. 
 This geolocation was manually verified prior to the work. 
-Therefore their position and orientation can be used; 1) as a ground truth to 
-validate and evaluate the geolocation computation and 2) to build sets of images 
-having high chances to show some overlay. To build such subsets we have run 
-the DBSCAN clustering algorithm \citep{ester1996} on the database.
+Therefore their position and orientation can be used; 
+1) as a ground truth to  validate and evaluate the geolocation computation and 
+2) to build sets of images having high chances to show some overlay, 
+which is intended to drastically reduce the calculation time. 
+To build such subsets we have run  the DBSCAN clustering algorithm 
+\citep{ester1996} on the database.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Computation steps}
@@ -144,18 +191,26 @@ similarities of their descriptor \citep{lowe1999}.
 Since descriptors are fixed dimension vectors, these similarities also characterize 
 the distances between them within the descriptors space. 
 By applying RANSAC \citep{fischler1981} to compute the homography matrix for each 
-image pair, we can remove some outliers in this first matching results.
+image pair, we are able remove some false positive in this first matching results.
  
 
 \subsubsection*{Geometrical filter}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Finally, in order to eliminate the last outliers, we developed a geometrical filter.
+Finally, in order to eliminate the last false positive results, we developed 
+a geometrical filter.
 This filter works as follow: we first compute the projection of the frame of the first
 image onto the second one using the  homography matrix computed with RANSAC and then
 we make some simple tests on this geometry. These tests only retains geometries with:
 1) a non-intersecting shape
 2) a convexe shape
 3) a shape surface representing at least 10\% of the image.
+%%%%%%%%%%%%%%%%
+\iffalse
+\item a non-intersecting shape
+\item a convexe shape
+\item a shape surface representing at least 10\% of the image.
+\fi
+%%%%%%%%%%%%%%%%
 %Finally, in order to eliminate the last outliers, we developed a filter based
 %on a simple geometry resulting from the application of the homography matrix 
 %that was computed with RANSAC.
@@ -203,7 +258,7 @@ another one deeper in the graph structure. And so on, until to the last image.
 For each of these stages we evaluated the sensitivity of the results to individual
 parameter changes based on a confusion matrix \citep{stehman1997}.
 We also checked how our outliers removal filter behaved.
-Finally,the entire process was run on 22 true pairs of a 27 images cluster. 
+Finally, the entire process was run on 22 true pairs of a 27 images cluster. 
 We extracted the 3D coordinates of tie points from the digital elevation model
 for the first image of the pair (reference) and computed the geolocation of 
 the second (query) image.
@@ -312,8 +367,9 @@ were discarded because of a lack in DEM values (no data).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Discussion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Results that are close to reality are often obtained when the camera was closed
-to the capture portion of the landscape (fig.\,\ref{ex1}).
+Results that are close to the user provided position (which is taken as ground truth) 
+are often obtained when the camera was closed to the part of the landscape 
+captured (fig.\,\ref{ex1}).
 
 \begin{figure}[H]
 \centering
@@ -379,22 +435,27 @@ the DEM, which is approximately 2\,km away from their real location in the backg
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Results showed that the pose computation of a query image is quite efficient
-when some conditons are respected, especially the accuracy of the reference image
-pose which influences the DEM relative position.
+Results showed that the pose computation of a query image is quite accurate
+when some conditons are respected;  the accuracy of the reference image
+pose is crucial. It influences the DEM relative position and 3D coordinates of
+tie points. The query image pose accuracy cannot be better than the reference one.
 
 Tie points distribution on images is also of great importance as shown by this
 study. An homogeneous distrubution would undoubtedly improve the precision of the
 computed position.
+
 This would also be the case if we can detect and use GCPs that are already 
 in database to register a query image. 
 
 %In this study, clustering was possible because images positions were already known.
-Furthermore, as the matching process is a O(n$^{2}$) complex problem, 
-it would take too much time to tackle any new large images dataset with 
-no known a priori positions where clusters cannot be built. 
-This is still a challenge that would require a machine learning approach or 
-some heavier computation steps.
+Furthermore, as the Brute-Force matching process is a O(n$^{2}$) complex problem, 
+it takes too much time to tackle any new large images dataset with no known 
+a priori positions and where clusters cannot be built. This would need strong
+computational power.
+Reducing features space and avoiding to much redundancy would be ways to explore 
+prior to the matching stage.
+In such way, machine learning or bag-of-features techniques may offer other 
+valuable alternative to find overlapping images.
 
 
 Finally, to integrate this process on the web platform, we will need a two-steps
