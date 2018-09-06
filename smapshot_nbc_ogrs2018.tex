@@ -41,15 +41,28 @@
 
 
 \begin{abstract}
-Smapshot is a web-based participatory virtual globe \citep{produit2018}. 
-It uses crowdsourcing for the georeferencing of historical images. 
-These images come from several different sources, such as public archives or 
-private libraries. 
-The georeferencing process consists of picking a minimum of six well identifiable
-points both in the image and the textured 3D model of the landscape. 
-A pose estimation algorithm computes the position and orientation of the camera 
-and the image is then superimposed with the 3D model giving the impression that
+Smapshot is a web-based participatory virtual globe \citep{produit2018} where  
+users can georeference historical images of the landscape by clicking a minimum
+of six well identifiable correspondence points between the image and a 3D virtual 
+globe. The image is then superimposed with the 3D model giving the impression that
 the observer is looking through a window of the past. 
+The images database is expected to grow exponentially. In a near future, 
+the work of the web users will no longer be enough.
+
+To tackle this issue, we developped a semi-automatic process to georeference images.
+The users will be shown only images having a maximum number of neighbor images.
+These neighbor images are the ones with which they share some overlay. 
+This overlap is detected using the SIFT algorithm \citep{lowe1999} in a pairewise 
+matching process.
+
+For an image pair made of a reference image with a known pose and a query image 
+we want to georeference, we extracted the 3D world coordinates of the tie points
+from a digital elevation model.
+
+Then, by running a perspective-n-point algorithm after having geometrically tested the
+resulting homography between the two images, we compute the 6 degree of freedom pose,
+i.e. the position (X,Y,Z) and orientation (azimuth, tilt and roll angles) of the 
+query image. 
 \end{abstract}
 
 
