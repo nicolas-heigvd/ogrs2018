@@ -292,29 +292,31 @@ filter was much more better at this task (fig.\,\ref{res:3}).
 
 \begin{figure}[H]
 \centering
+%\hspace*{-10em}
+%\begin{minipage}{1.2\textwidth}
 \begin{subfigure}{0.32\textwidth}
-    \includegraphics[width=1\linewidth]{res_1.png}
+    \includegraphics[width=1\linewidth]{figure_distance_ratio_without_robust.png}
     \caption{After the simple matching.}
     \label{res:1}
 \end{subfigure}
-~
 \begin{subfigure}{0.32\textwidth}
-    \includegraphics[width=1\linewidth]{res_2.png}
+    \includegraphics[width=1\linewidth]{figure_distance_ratio_with_ransac.png}
     \caption{After using RANSAC.}
     \label{res:2}
 \end{subfigure}
-~
 \begin{subfigure}{0.32\textwidth}
-    \includegraphics[width=1\linewidth]{res_3.png}
+    \includegraphics[width=1\linewidth]{figure_distance_ratio_with_resfilt.png}
     \caption{After applying our filter.}
     \label{res:3}
 \end{subfigure}
 \caption[Results showing the improvement of the RANSAC and our filter]{Results showing the improvement of the RANSAC and our filter on the recall as a function of the nearest neighbor distance ratio used 
-by the SIFT algorithm. \colorbox{yellow}{REDRAW LES FIGURES}}
+by the SIFT algorithm.}
 \label{res}
+%\end{minipage}
 \end{figure}
 
-Others parameters of the SIFT and RANSAC algorithms were also tested (not showed here)
+
+Others parameters of the SIFT and RANSAC algorithms were also tested (not shown here)
 and led to the values in table \ref{values}.
 
 
