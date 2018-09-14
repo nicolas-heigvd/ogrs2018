@@ -120,7 +120,6 @@ But there is one more step to achieve to geolocate images.
 \fi
 %%%%%%%%%%%%%%%%
 
-
 Some studies have shown it is possible to geolocate large quantities of 
 images only based on their comparison with a database of millions of geotagged 
 images \citep{hays2015,weyand2016}. Object retrieval technique can also be used 
@@ -295,21 +294,21 @@ filter was much more better at this task (fig.\,\ref{res:3}).
 \hspace*{-0.36em}
 \begin{minipage}{1.08\textwidth}
 \begin{subfigure}{0.324\textwidth}
-    \includegraphics[width=1\linewidth]{figure_distance_ratio_without_robust.png}
+    \includegraphics[width=1\linewidth]{figure_distance_ratio_None.png}
     \caption{After the simple matching.}
     \label{res:1}
 \end{subfigure}
 \begin{subfigure}{0.324\textwidth}
-    \includegraphics[width=1\linewidth]{figure_distance_ratio_with_ransac.png}
+    \includegraphics[width=1\linewidth]{figure_distance_ratio_with_Robust.png}
     \caption{After using RANSAC.}
     \label{res:2}
 \end{subfigure}
 \begin{subfigure}{0.324\textwidth}
-    \includegraphics[width=1\linewidth]{figure_distance_ratio_with_resfilt.png}
+    \includegraphics[width=1\linewidth]{figure_distance_ratio_with_ResFilt.png}
     \caption{After applying our filter.}
     \label{res:3}
 \end{subfigure}
-\caption[Results showing the improvement of the RANSAC and our filter]{Results showing the improvement of the RANSAC and our filter on the recall as a function of the nearest neighbor distance ratio used 
+\caption[Results showing the improvement of the RANSAC outliers removal and our filter]{Results showing the improvement of the RANSAC outliers removal and our filter on the matches recall as a function of the nearest neighbor distance ratio used 
 by the SIFT algorithm.}
 \label{res}
 \end{minipage}
